@@ -6,7 +6,7 @@
     "#/*": "./src/*"
   },
   "scripts": {
-    "dev": "bun run --bun vite dev --port 3000",
+    "dev": "bun run --bun vite dev --port 3000 --host",
     "generate-routes": "tsr generate",
     "build": "bun run --bun vite build",
     "preview": "bun run --bun vite preview",
@@ -17,8 +17,11 @@
     "check": "prettier --check ."
   },
   "dependencies": {
+    "@ai-sdk/react": "^4.0.34",
     "@base-ui/react": "^1.6.0",
     "@fontsource-variable/geist": "^5.2.9",
+    "@shadcn/helpers": "^0.1.0",
+    "@shadcn/react": "^0.2.1",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-devtools": "latest",
     "@tanstack/react-router": "latest",
@@ -26,6 +29,7 @@
     "@tanstack/react-router-ssr-query": "latest",
     "@tanstack/react-start": "latest",
     "@tanstack/router-plugin": "^1.132.0",
+    "ai-sdk": "link:@shadcn/helpers/ai-sdk",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.545.0",
