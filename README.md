@@ -1,185 +1,100 @@
+# Gemini AI Chat Client (Client-Side)
 
-# Astro Starter Kit: Minimal
+Aplikasi chat AI berbasis Gemini API buatan Google yang berjalan **100% di sisi client** (tanpa backend/server khusus). Dibangun menggunakan **React 19**, **Tailwind CSS v4**, **shadcn UI design system**, dan disiapkan untuk **Tauri 2.0 Mobile / Desktop**.
 
-```sh
-bun create astro@latest -- --template minimal
+---
+
+## 📌 Mengapa `shadcn init` Sempat Gagal Sebelumnya?
+
+Command `shadcn init` gagal karena beberapa konfigurasi dasar Vite + React belum terpasang:
+1. **Belum ada Tailwind CSS v4 / `@tailwindcss/vite`** di konfigurasi `vite.config.ts`.
+2. **Belum ada Path Alias (`@/*` -> `./src/*`)** di `vite.config.ts` dan `tsconfig.json`.
+3. **Template Vite bawaan masih TypeScript Polos** (`main.ts` bukan `main.tsx` React).
+
+---
+
+## 🚀 Fitur Utama Aplikasi
+
+- 🔑 **Form Setup Sebelum Chat**: Mengharuskan pengguna memasukkan **API Key Gemini** milik sendiri dan memilih **Model Gemini** sebelum masuk ke layar chat.
+- 🤖 **Pilihan Model Gemini**:
+  - `gemini-2.5-flash` (Rekomendasi Utama - Cepat & Cerdas)
+  - `gemini-2.5-pro` (Penalaran Tingkat Tinggi)
+  - `gemini-2.0-flash` (Sangat Cepat & Responsif)
+  - `gemini-1.5-flash` & `gemini-1.5-pro`
+  - Opsi Nama Model Kustom (Custom Model ID)
+- ⚙️ **Instruksi Sistem (System Prompt)**: Dapat disesuaikan sesuai kebutuhan (misal: "Kamu adalah pakar pemrograman...").
+- 🔒 **Aman & Nyaman**: API Key tersimpan secara lokal di `localStorage` browser/aplikasi Anda (tidak pernah dikirim ke server pihak ketiga).
+- 💬 **Streaming Real-time Chat**: Menggunakan Server-Sent Events (SSE) langsung dari REST API Google Gemini.
+- ⚙️ **Ubah Pengaturan Kapan Saja**: Tombol *Pengaturan* di navigasi atas untuk mengubah API Key atau beralih Model Gemini kapan pun tanpa kehilangan riwayat.
+- 🎨 **Modern Dark Glassmorphism UI**: Tampilan responsif dengan Tailwind CSS, Lucide Icons, dan komponen khas shadcn UI.
+
+---
+
+## 🛠️ Langkah-Langkah Instalasi & Penggunaan
+
+### 1. Install Dependencies
+Proyek ini sudah dilengkapi dengan semua paket yang dibutuhkan. Cukup jalankan:
+
+```bash
+pnpm install
+# atau jika menggunakan bun:
+bun install
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+### 2. Jalankan Mode Web Dev
+Untuk mencoba aplikasi langsung di browser:
 
-## 🚀 Project Structure
+```bash
+pnpm dev
+# atau:
+bun run dev
+```
+Akses di URL lokal (biasanya `http://localhost:1420`).
 
-Inside of your Astro project, you'll see the following folders and files:
+### 3. Jalankan Mode Desktop / Tauri
+Untuk menjalankan sebagai aplikasi desktop native Tauri:
+
+```bash
+pnpm desktop
+# atau:
+bun run desktop
+```
+
+### 4. Jalankan Mode Mobile / Android
+Untuk menjalankan di emulator/device Android:
+
+```bash
+pnpm android
+# atau:
+bun run android
+```
+
+---
+
+## 📂 Struktur Proyek
 
 ```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+first-tauri-2.0-mobile-app/
+├── components.json              # Konfigurasi shadcn UI CLI
+├── index.html                   # HTML Entry Point
+├── package.json                 # Dependencies (React, Tailwind, Lucide)
+├── tsconfig.json                # TypeScript & Path Alias (@/*)
+├── vite.config.ts               # Vite configuration + React & Tailwind plugin
+└── src/
+    ├── main.tsx                 # React Mount Entry
+    ├── App.tsx                  # State manager (Form Config vs Chat Screen)
+    ├── styles.css               # Tailwind CSS v4 & shadcn Design Tokens
+    ├── lib/
+    │   └── utils.ts             # Function helper `cn` (clsx + tailwind-merge)
+    ├── services/
+    │   └── gemini.ts            # Client-side Gemini REST API & SSE Streaming Service
+    └── components/
+        ├── ApiKeyForm.tsx       # Form Pemilihan Model & Input API Key
+        └── ChatInterface.tsx    # Layar utama Chat UI & Header
 ```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `bun install`             | Installs dependencies                            |
-| `bun dev`             | Starts local dev server at `localhost:4321`      |
-| `bun build`           | Build your production site to `./dist/`          |
-| `bun preview`         | Preview your build locally, before deploying     |
-| `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `bun astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
 
 ---
 
-# Pocket-AI Mobile App (Tauri 2.0 + Astro + React + Tailwind + DaisyUI)
-
-## 🧠 Rekomendasi Stack Backend (Rust) untuk Pocket-AI
-
-Tauri 2.0 membagi aplikasi menjadi **Frontend** (UI di Webview) dan **Backend** (Host Rust). Untuk aplikasi Pocket-AI Chat, berikut rekomendasi stack/crates backend Rust terbaik:
-
-1. **Local State & User Preferences**:
-   - `tauri-plugin-store`: Plugin resmi Tauri untuk menyimpan API Key, preferensi tema, dan setelan chat secara aman di disk (JSON format).
-2. **Local Chat History (Database)**:
-   - `tauri-plugin-sql` dengan driver **SQLite**: Solusi paling efisien untuk mobile database. Riwayat chat disimpan secara lokal dalam SQLite file di storage HP.
-3. **AI Integration (Gemini/OpenAI API)**:
-   - `reqwest` (dengan feature `stream`): Untuk fetch API dan melakukan streaming tokens (efek mengetik AI saat membalas).
-   - _Alternatif_: Gunakan `tauri-plugin-http` di frontend/backend jika ingin bypass limitasi CORS secara native.
-4. **On-Device Local Inference (Offline AI)**:
-   - `candle-core` (oleh Hugging Face) atau bindings `ort` (ONNX Runtime): Jika Anda berniat menjalankan model kecil (misalnya Qwen-0.5B atau Llama-3-8B-quantized) langsung di CPU/GPU HP tanpa internet. (Catatan: Butuh optimasi performa memory yang cukup ketat di mobile).
-
----
-
-## 🚀 Panduan Langkah-Langkah Memulai Project
-
-Ikuti urutan langkah di bawah ini untuk mensetup project dari awal hingga siap ngoding:
-
-### Langkah 1: Masuk ke Nix Development Environment
-
-Buka terminal di root project (`/home/tquilla/.repos/first-tauri-2.0-mobile-app`), lalu ketikkan perintah berikut untuk mengaktifkan environment Nix:
-
-```bash
-nix develop --impure
-```
-
-_Nix akan mengunduh semua dependency (JDK, Android SDK, Rust Toolchain, Bun) secara otomatis dan masuk ke dev shell._
-
-### Langkah 2: Setup Frontend Astro + React + Tailwind + DaisyUI
-
-Karena kita menggunakan Astro sebagai generator halaman statis (SSG) untuk Tauri, kita setup frontend-nya terlebih dahulu di root folder:
-
-1. **Inisialisasi Astro**:
-
-   ```bash
-   bun create astro@latest . -- --template minimal
-   ```
-
-   _Pilih: **Yes** untuk install dependencies, **Yes** untuk TypeScript._
-
-2. **Integrasikan React**:
-
-   ```bash
-   bun astro add react
-   ```
-
-3. **Integrasikan Tailwind CSS**:
-
-   ```bash
-   bun astro add tailwind
-   ```
-
-4. **Instal DaisyUI**:
-
-   ```bash
-   bun add -d daisyui@latest
-   ```
-
-5. **Konfigurasi Tailwind untuk DaisyUI**:
-   Buka file `tailwind.config.mjs` dan tambahkan daisyui di bagian plugins:
-   ```javascript
-   /** @type {import('tailwindcss').Config} */
-   export default {
-     content: ["./src/**/*.{astro,html,js,jsx,md,mdx,sgn,ts,tsx,vue}"],
-     theme: {
-       extend: {},
-     },
-     plugins: [require("daisyui")],
-   };
-   ```
-
-### Langkah 3: Setup Konfigurasi Build Astro (Static Site)
-
-Tauri membutuhkan build frontend berupa static files (HTML, CSS, JS). Kita harus mengatur Astro agar melakukan _Static SSG_:
-Buka `astro.config.mjs` dan pastikan isinya seperti berikut:
-
-```javascript
-import { defineConfig } from "astro/config";
-import react from "@astrojs/react";
-import tailwind from "@astrojs/tailwind";
-
-export default defineConfig({
-  output: "static", // Menghasilkan file static di folder 'dist'
-  integrations: [react(), tailwind()],
-});
-```
-
-### Langkah 4: Setup Tauri 2.0
-
-Setelah Astro siap, jalankan tauri generator:
-
-```bash
-bun create tauri-app@latest .
-```
-
-Saat muncul prompt interaktif:
-
-- **What is your app name?**: `pocket-ai`
-- **What window title do you want?**: `Pocket AI`
-- **Frontend language**: `TypeScript / JavaScript`
-- **Package manager**: `bun`
-- **UI template**: `Astro (https://astro.build/)` (atau sesuaikan)
-- **Web assets path**: `../dist` (Lokasi output build Astro)
-- **Dev server URL**: `http://localhost:4321` (URL local development server Astro)
-
-### Langkah 5: Setup Android Support
-
-Di dalam dev shell, jalankan perintah berikut untuk menginisialisasi folder target mobile:
-
-```bash
-android-init
-```
-
-_Tauri akan membuat folder `src-tauri/gen/android` berisi konfigurasi gradle project._
-
-### Langkah 6: Membuat Emulator Android (AVD)
-
-Jika Anda belum memiliki emulator Android di laptop Anda:
-
-```bash
-make-avd
-```
-
-_Script ini akan membuat Android Virtual Device (AVD) bernama `tauri-dev` dengan API 34._
-
-### Langkah 7: Jalankan Aplikasi dalam Mode Development
-
-1. **Jalankan Emulator Android**:
-   Buka emulator via CLI atau Android Studio. (Biasanya devenv emulator bisa dinyalakan lewat `emulator @tauri-dev`).
-2. **Jalankan Tauri Dev Mode**:
-   ```bash
-   android-dev
-   ```
-   _Perintah ini akan menyalakan server development Astro dan melakukan kompilasi Rust ke emulator Android Anda secara real-time._
+## 💡 Dapatkan API Key Gemini Gratis
+Jika belum memiliki API Key Gemini, Anda bisa mendapatkannya secara gratis melalui **Google AI Studio**:
+👉 [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
