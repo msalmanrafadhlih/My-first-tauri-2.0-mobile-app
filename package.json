@@ -1,8 +1,8 @@
 {
-  "name": "first-tauri-2.0-mobile-app",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "pocket-ai",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
   "scripts": {
     "dev:client": "cd apps/client && bun run dev",
     "dev:server": "cd apps/server && bun run dev",
@@ -11,17 +11,20 @@
     "build:desktop": "cd apps/client && bun run tauri build",
     "build:android": "cd apps/client && bun run tauri android build",
     "desktop": "cd apps/client && pnpm dlx @tauri-apps/cli dev",
-    "android": "cd apps/client && pnpm dlx @tauri-apps/cli android dev"
+    "android": "cd apps/client && pnpm dlx @tauri-apps/cli android dev",
+
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "^11.11.0",
-      "onFail": "download"
-    }
+  "dependencies": {
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-opener": "^2"
   },
-  "type": "module"
+  "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "vite": "^6.0.3",
+    "typescript": "~5.6.2"
+  }
 }
