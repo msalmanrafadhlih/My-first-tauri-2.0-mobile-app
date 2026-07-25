@@ -4,28 +4,23 @@ Aplikasi chat AI berbasis Gemini API buatan Google yang berjalan **100% di sisi 
 
 ---
 
-## 📌 Mengapa `shadcn init` Sempat Gagal Sebelumnya?
-
-Command `shadcn init` gagal karena beberapa konfigurasi dasar Vite + React belum terpasang:
-1. **Belum ada Tailwind CSS v4 / `@tailwindcss/vite`** di konfigurasi `vite.config.ts`.
-2. **Belum ada Path Alias (`@/*` -> `./src/*`)** di `vite.config.ts` dan `tsconfig.json`.
-3. **Template Vite bawaan masih TypeScript Polos** (`main.ts` bukan `main.tsx` React).
-
----
-
-## 🚀 Fitur Utama Aplikasi
+## 📌 Fitur Utama Aplikasi
 
 - 🔑 **Form Setup Sebelum Chat**: Mengharuskan pengguna memasukkan **API Key Gemini** milik sendiri dan memilih **Model Gemini** sebelum masuk ke layar chat.
+- 🗂️ **Manajemen Riwayat Chat (Multi-Session)**:
+  - 📝 **Simpan & Muat Riwayat**: Tersimpan secara lokal per sesi di `localStorage`.
+  - ➕ **Percakapan Baru (New Chat)**: Membuat sesi percakapan baru dengan satu klik.
+  - 🏷️ **Judul Otomatis**: Judul percakapan otomatis dibuat dari pertanyaan pertama pengguna.
+  - 🔍 **Fitur Cari Riwayat**: Memudahkan pencarian sesi percakapan lama.
+  - 🗑️ **Hapus Percakapan**: Menghapus percakapan tertentu atau seluruh riwayat.
 - 🤖 **Pilihan Model Gemini**:
   - `gemini-2.5-flash` (Rekomendasi Utama - Cepat & Cerdas)
   - `gemini-2.5-pro` (Penalaran Tingkat Tinggi)
   - `gemini-2.0-flash` (Sangat Cepat & Responsif)
   - `gemini-1.5-flash` & `gemini-1.5-pro`
   - Opsi Nama Model Kustom (Custom Model ID)
-- ⚙️ **Instruksi Sistem (System Prompt)**: Dapat disesuaikan sesuai kebutuhan (misal: "Kamu adalah pakar pemrograman...").
-- 🔒 **Aman & Nyaman**: API Key tersimpan secara lokal di `localStorage` browser/aplikasi Anda (tidak pernah dikirim ke server pihak ketiga).
 - 💬 **Streaming Real-time Chat**: Menggunakan Server-Sent Events (SSE) langsung dari REST API Google Gemini.
-- ⚙️ **Ubah Pengaturan Kapan Saja**: Tombol *Pengaturan* di navigasi atas untuk mengubah API Key atau beralih Model Gemini kapan pun tanpa kehilangan riwayat.
+- ⚙️ **Ubah Pengaturan Kapan Saja**: Tombol *Pengaturan* di navigasi atas untuk mengubah API Key atau beralih Model Gemini.
 - 🎨 **Modern Dark Glassmorphism UI**: Tampilan responsif dengan Tailwind CSS, Lucide Icons, dan komponen khas shadcn UI.
 
 ---
@@ -87,14 +82,10 @@ first-tauri-2.0-mobile-app/
     ├── lib/
     │   └── utils.ts             # Function helper `cn` (clsx + tailwind-merge)
     ├── services/
-    │   └── gemini.ts            # Client-side Gemini REST API & SSE Streaming Service
+    │   ├── gemini.ts            # Client-side Gemini REST API & SSE Streaming Service
+    │   └── history.ts           # Service Manajemen Riwayat Chat Multi-Session
     └── components/
         ├── ApiKeyForm.tsx       # Form Pemilihan Model & Input API Key
+        ├── Sidebar.tsx          # Panel Samping Riwayat Chat & Pencarian
         └── ChatInterface.tsx    # Layar utama Chat UI & Header
 ```
-
----
-
-## 💡 Dapatkan API Key Gemini Gratis
-Jika belum memiliki API Key Gemini, Anda bisa mendapatkannya secara gratis melalui **Google AI Studio**:
-👉 [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
