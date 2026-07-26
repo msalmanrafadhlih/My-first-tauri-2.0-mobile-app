@@ -9,7 +9,8 @@ import {
   createNewSession
 } from "../services/history";
 import { Sidebar } from "./Sidebar";
-import { Send, Settings, Bot, User, Sparkles, Copy, Check, Cpu, PanelLeftOpen, Plus } from "lucide-react";
+import { MarkdownContent } from "./MarkdownContent";
+import { Send, Settings, Sparkles, Copy, Check, Cpu, PanelLeftOpen, Plus } from "lucide-react";
 
 interface ChatInterfaceProps {
   config: GeminiConfig;
@@ -306,62 +307,59 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ config, onOpenSett
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 max-w-4xl w-full mx-auto">
           {messages.map((msg) => {
             const isUser = msg.role === "user";
+            const timeLabel = new Date(msg.timestamp).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit"
+            });
 
+            // User messages: bubble, right-aligned, plain text
+            if (isUser) {
+              return (
+                <div key={msg.id} className="flex justify-end">
+                  <div className="max-w-[85%] sm:max-w-[75%] rounded-2xl rounded-tr-md px-4 py-3 text-sm leading-relaxed bg-cyan-600 text-white shadow-md shadow-cyan-900/20">
+                    <div className="whitespace-pre-wrap break-words">{msg.text}</div>
+                    <div className="mt-1.5 text-[10px] opacity-70 text-cyan-100 text-right">
+                      {timeLabel}
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            // Bot messages: no bubble, no avatar — plain flowing markdown text
             return (
-              <div
-                key={msg.id}
-                className={`flex items-start space-x-3 ${isUser ? "flex-row-reverse space-x-reverse" : "flex-row"}`}
-              >
-                {/* Avatar */}
-                <div
-                  className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-white shadow-sm ${
-                    isUser
-                      ? "bg-slate-700 text-slate-200"
-                      : "bg-gradient-to-tr from-cyan-500 to-blue-600"
-                  }`}
-                >
-                  {isUser ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
-                </div>
-
-                {/* Message Bubble */}
-                <div
-                  className={`group relative max-w-[85%] sm:max-w-[75%] rounded-2xl p-4 text-sm leading-relaxed ${
-                    isUser
-                      ? "bg-cyan-600 text-white rounded-tr-none shadow-md shadow-cyan-900/20"
-                      : msg.isError
-                      ? "bg-red-950/80 border border-red-800/80 text-red-200 rounded-tl-none"
-                      : "bg-slate-900/80 border border-slate-800/90 text-slate-100 rounded-tl-none shadow-sm"
-                  }`}
-                >
-                  {/* Content */}
-                  <div className="whitespace-pre-wrap break-words">
-                    {msg.text || (
-                      <span className="inline-flex items-center gap-1.5 text-slate-400 italic">
-                        <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-                        Gemini sedang berpikir...
-                      </span>
-                    )}
+              <div key={msg.id} className="group relative w-full max-w-[95%] sm:max-w-[85%]">
+                {msg.text ? (
+                  <div className={msg.isError ? "text-red-300" : "text-slate-100"}>
+                    <MarkdownContent content={msg.text} />
                   </div>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 text-slate-400 italic text-sm">
+                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+                    Gemini sedang berpikir...
+                  </span>
+                )}
 
-                  {/* Copy & Timestamp Bar */}
-                  <div className={`mt-2 flex items-center justify-between text-[10px] opacity-70 ${isUser ? "text-cyan-100" : "text-slate-400"}`}>
-                    <span>
-                      {new Date(msg.timestamp).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit"
-                      })}
-                    </span>
-                    {!isUser && msg.text && (
-                      <button
-                        onClick={() => copyToClipboard(msg.id, msg.text)}
-                        className="ml-2 hover:opacity-100 transition p-0.5 rounded"
-                        title="Salin Teks"
-                      >
-                        {copiedId === msg.id ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                      </button>
-                    )}
+                {msg.text && (
+                  <div className="mt-1 flex items-center gap-3 text-[10px] text-slate-500 opacity-0 group-hover:opacity-100 transition">
+                    <span>{timeLabel}</span>
+                    <button
+                      onClick={() => copyToClipboard(msg.id, msg.text)}
+                      className="flex items-center gap-1 hover:text-slate-300 transition"
+                      title="Salin Teks"
+                    >
+                      {copiedId === msg.id ? (
+                        <>
+                          <Check className="w-3 h-3 text-emerald-400" /> Disalin
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3" /> Salin
+                        </>
+                      )}
+                    </button>
                   </div>
-                </div>
+                )}
               </div>
             );
           })}
