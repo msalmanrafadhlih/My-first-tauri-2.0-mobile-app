@@ -1,0 +1,59 @@
+name: Build & Release Android APK
+
+# Otomatis berjalan hanya ketika kamu nge-push tag versi baru (contoh: git push origin v1.0.0)
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "17"
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android, armv7-linux-androideabi, i686-linux-android, x86_64-linux-android
+
+      - name: Install Frontend Dependencies
+        run: bun install
+
+      - name: Decode Keystore & Create Properties
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          # Mengembalikan teks Base64 menjadi file .jks
+          echo $KEYSTORE_BASE64 | base64 --decode > src-tauri/gen/android/upload-keystore.jks
+
+          # Membuat file keystore.properties secara dinamis
+          cat << EOF > src-tauri/gen/android/keystore.properties
+          password=$KEY_PASSWORD
+          keyAlias=$KEY_ALIAS
+          storeFile=${{ github.workspace }}/src-tauri/gen/android/upload-keystore.jks
+          EOF
+
+      - name: Build Android APK
+        run: bun run tauri android build --apk
+
+      - name: Upload Release to GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          files: src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk
+          name: Release ${{ github.ref_name }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
