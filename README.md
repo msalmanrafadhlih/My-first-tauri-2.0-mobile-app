@@ -1,91 +1,136 @@
-# Gemini AI Chat Client (Client-Side)
+# PocketAi (Gemini AI Chat Client)
 
-Aplikasi chat AI berbasis Gemini API buatan Google yang berjalan **100% di sisi client** (tanpa backend/server khusus). Dibangun menggunakan **React 19**, **Tailwind CSS v4**, **shadcn UI design system**, dan disiapkan untuk **Tauri 2.0 Mobile / Desktop**.
+**PocketAi** adalah aplikasi antarmuka percakapan (*chat client*) berbasis Google Gemini API yang berjalan **100% di sisi klien** (*client-side*). Aplikasi ini dibangun menggunakan **Tauri 2.0**, **React 19**, **TypeScript**, dan **Tailwind CSS v4** untuk memberikan pengalaman obrolan AI yang cepat, ringan, privat, dan responsif di platform Mobile (Android) maupun Desktop.
 
 ---
 
-## 📌 Fitur Utama Aplikasi
+## Tujuan Utama
 
-- 🔑 **Form Setup Sebelum Chat**: Mengharuskan pengguna memasukkan **API Key Gemini** milik sendiri dan memilih **Model Gemini** sebelum masuk ke layar chat.
-- 🗂️ **Manajemen Riwayat Chat (Multi-Session)**:
-  - 📝 **Simpan & Muat Riwayat**: Tersimpan secara lokal per sesi di `localStorage`.
-  - ➕ **Percakapan Baru (New Chat)**: Membuat sesi percakapan baru dengan satu klik.
-  - 🏷️ **Judul Otomatis**: Judul percakapan otomatis dibuat dari pertanyaan pertama pengguna.
-  - 🔍 **Fitur Cari Riwayat**: Memudahkan pencarian sesi percakapan lama.
-  - 🗑️ **Hapus Percakapan**: Menghapus percakapan tertentu atau seluruh riwayat.
-- 🤖 **Pilihan Model Gemini**:
-  - `gemini-2.5-flash` (Rekomendasi Utama - Cepat & Cerdas)
-  - `gemini-2.5-pro` (Penalaran Tingkat Tinggi)
-  - `gemini-2.0-flash` (Sangat Cepat & Responsif)
+- **Privasi & Keamanan Data**: Tidak ada server perantara (*backend* khusus) yang menyimpan pesan atau kunci API. Komunikasi dengan API Google Gemini dilakukan langsung dari perangkat pengguna.
+- **Kinerja Tinggi & Hemat Sumber Daya**: Menggunakan arsitektur native Tauri 2.0 dengan konsumsi memori dan ukuran paket yang efisien.
+- **Fleksibilitas Kunci API & Model**: Memungkinkan pengguna memasukkan Google Gemini API Key milik sendiri (*Bring Your Own Key*) serta memilih berbagai model Gemini sesuai kebutuhan.
+
+---
+
+## Fitur Utama
+
+- **Client-Side Architecture**: Komunikasi langsung dengan REST API Google Gemini melalui SSE (*Server-Sent Events*) untuk pengiriman respons *real-time streaming*.
+- **Manajemen Riwayat Chat (Multi-Session)**:
+  - Penyimpanan sesi percakapan lokal di `localStorage`.
+  - Pembentukan judul percakapan secara otomatis dari pesan pertama.
+  - Pencarian, pemuatan ulang, dan penghapusan sesi percakapan.
+- **Dukungan Model Gemini**:
+  - `gemini-2.5-flash` (Default - Cepat & Efisien)
+  - `gemini-2.5-pro` (Penalaran Kompleks)
+  - `gemini-2.0-flash`
   - `gemini-1.5-flash` & `gemini-1.5-pro`
-  - Opsi Nama Model Kustom (Custom Model ID)
-- 💬 **Streaming Real-time Chat**: Menggunakan Server-Sent Events (SSE) langsung dari REST API Google Gemini.
-- ⚙️ **Ubah Pengaturan Kapan Saja**: Tombol *Pengaturan* di navigasi atas untuk mengubah API Key atau beralih Model Gemini.
-- 🎨 **Modern Dark Glassmorphism UI**: Tampilan responsif dengan Tailwind CSS, Lucide Icons, dan komponen khas shadcn UI.
+  - Opsi penyesuaian Custom Model ID.
+- **Desain UI Modern & Multi-Platform**: Antarmuka berbasis *Dark Mode Glassmorphism* yang responsif untuk layar HP (Android) hingga Desktop.
 
 ---
 
-## 🛠️ Langkah-Langkah Instalasi & Penggunaan
+## Panduan Instalasi & Penggunaan
 
-### 1. Install Dependencies
-Proyek ini sudah dilengkapi dengan semua paket yang dibutuhkan. Cukup jalankan:
+### 1. Download Langsung dari GitHub Releases (Rekomendasi Pengguna)
 
+Cara termudah untuk menggunakan PocketAi tanpa perlu melakukan kompilasi kode:
+
+1. Buka halaman **Releases** pada repositori GitHub ini.
+2. Unduh berkas biner sesuai perangkat Anda:
+   - **Android**: Berkas `app-universal-release.apk`
+   - **Desktop**: Berkas paket installer sesuai OS Anda (Linux `.AppImage`/`.deb`, dsb.)
+3. Pasang (*install*) berkas yang telah diunduh di perangkat Anda dan jalankan aplikasi.
+
+---
+
+### 2. Build Manual Menggunakan Nix (Rekomendasi Developer NixOS)
+
+Repositori ini menyediakan konfigurasi **Nix Flakes** dan **Devenv** untuk lingkungan pengembangan dan proses *build* yang terisolasi serta reproduktif.
+
+#### Persyaratan
+- System dengan [Nix](https://nixos.org/) dan fitur `flakes` diaktifkan.
+
+#### Menjalankan Development Shell
+Untuk mengaktifkan *dev environment* dengan seluruh *dependency* (Bun, Rust, Android SDK):
 ```bash
-pnpm install
-# atau jika menggunakan bun:
-bun install
+nix develop
 ```
 
-### 2. Jalankan Mode Web Dev
-Untuk mencoba aplikasi langsung di browser:
-
+#### Build Paket Menggunakan Nix Flakes
+Untuk memicu proses kompilasi aplikasi secara terisolasi via Nix:
 ```bash
-pnpm dev
-# atau:
-bun run dev
-```
-Akses di URL lokal (biasanya `http://localhost:1420`).
-
-### 3. Jalankan Mode Desktop / Tauri
-Untuk menjalankan sebagai aplikasi desktop native Tauri:
-
-```bash
-pnpm desktop
-# atau:
-bun run desktop
-```
-
-### 4. Jalankan Mode Mobile / Android
-Untuk menjalankan di emulator/device Android:
-
-```bash
-pnpm android
-# atau:
-bun run android
+nix build
 ```
 
 ---
 
-## 📂 Struktur Proyek
+### 3. Build Manual Secara Umum (Standard Toolchain)
+
+Jika Anda tidak menggunakan Nix, Anda dapat melakukan kompilasi manual menggunakan paket manager standar (`bun` atau `pnpm`) dan Rust toolchain.
+
+#### Persyaratan Sistem
+- **Node.js** (v18+) atau **Bun**
+- **Rust Toolchain** (terpasang melalui `rustup`)
+- *(Opsional)* **Android SDK & NDK** (jika mem-build target Android)
+
+#### Langkah Build & Running
+
+1. **Clone Repositori & Install Dependencies**:
+   ```bash
+   git clone https://github.com/msalmanrafadhlih/first-tauri-2.0-mobile-app.git
+   cd first-tauri-2.0-mobile-app
+   bun install
+   ```
+
+2. **Menjalankan dalam Mode Development**:
+   - Web Browser:
+     ```bash
+     bun run dev
+     ```
+   - Desktop App (Tauri):
+     ```bash
+     bun run desktop
+     ```
+   - Android App (Tauri):
+     ```bash
+     bun run android
+     ```
+
+3. **Membuat Package Production (Build Biner)**:
+   - Build Desktop Application:
+     ```bash
+     bun run build:desktop
+     ```
+   - Build Android APK:
+     ```bash
+     bun run build:android
+     ```
+   *Hasil kompilasi biner akan tersimpan di direktori `src-tauri/target/release` atau `src-tauri/gen/android/app/build/outputs/apk/`.*
+
+---
+
+## Struktur Proyek
 
 ```text
-first-tauri-2.0-mobile-app/
-├── components.json              # Konfigurasi shadcn UI CLI
-├── index.html                   # HTML Entry Point
-├── package.json                 # Dependencies (React, Tailwind, Lucide)
-├── tsconfig.json                # TypeScript & Path Alias (@/*)
-├── vite.config.ts               # Vite configuration + React & Tailwind plugin
-└── src/
-    ├── main.tsx                 # React Mount Entry
-    ├── App.tsx                  # State manager (Form Config vs Chat Screen)
-    ├── styles.css               # Tailwind CSS v4 & shadcn Design Tokens
-    ├── lib/
-    │   └── utils.ts             # Function helper `cn` (clsx + tailwind-merge)
-    ├── services/
-    │   ├── gemini.ts            # Client-side Gemini REST API & SSE Streaming Service
-    │   └── history.ts           # Service Manajemen Riwayat Chat Multi-Session
-    └── components/
-        ├── ApiKeyForm.tsx       # Form Pemilihan Model & Input API Key
-        ├── Sidebar.tsx          # Panel Samping Riwayat Chat & Pencarian
-        └── ChatInterface.tsx    # Layar utama Chat UI & Header
+.
+├── apps/                        # Sub-packages / aplikasi pendukung
+├── src/                         # Frontend React 19 App
+│   ├── components/              # Komponen UI (ChatInterface, ApiKeyForm, Sidebar, dll)
+│   ├── services/                # Logika API Gemini & Pengelolaan Riwayat (localStorage)
+│   ├── lib/                     # Helper & utilitas UI
+│   └── styles.css               # Styling Tailwind CSS v4
+├── src-tauri/                   # Konfigurasi & Biner Native Tauri 2.0 (Rust)
+│   ├── gen/android/             # Environment & Konfigurasi Android Build
+│   ├── src/                     # Rust entrypoint (`main.rs`, `lib.rs`)
+│   └── tauri.conf.json          # Manifest Konfigurasi Tauri
+├── devenv.nix                   # Konfigurasi Lingkungan Pengembang Devenv
+├── flake.nix                    # Definisi Nix Flakes untuk Build & DevShell
+├── package.json                 # Manifest Dependency Klien & Script Build
+└── vite.config.ts               # Konfigurasi Bundler Vite
 ```
+
+---
+
+## Lisensi
+
+Proyek ini dirilis di bawah lisensi [MIT License](LICENSE).
