@@ -1,7 +1,7 @@
 {
   "name": "gemini-chat-app",
   "private": true,
-  "version": "v1.0.3",
+  "version": "v1.1.0",
   "type": "module",
   "scripts": {
     "dev": "bun run --bun vite",
@@ -18,6 +18,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.475.0",
+    "pnpm": "^11.17.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",
