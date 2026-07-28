@@ -378,7 +378,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ config, onOpenSett
                 e.target.style.height = `${Math.min(e.target.scrollHeight, 160)}px`;
               }}
               onKeyDown={handleKeyDown}
-              placeholder="Tanyakan sesuatu pada Gemini... (Shift+Enter untuk baris baru)"
+              placeholder="Tanyakan sesuatu pada Gemini..."
               rows={1}
               disabled={isGenerating}
               className="w-full bg-slate-950 border border-slate-800 rounded-2xl pl-4 pr-12 py-3.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 resize-none max-h-40 transition disabled:opacity-50"

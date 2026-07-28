@@ -1,13 +1,15 @@
+
 import React, { useState } from "react";
 import { GeminiConfig, AVAILABLE_MODELS, validateGeminiApiKey } from "../services/gemini";
-import { Key, Sparkles, Eye, EyeOff, Bot, ArrowRight, ShieldCheck, Cpu } from "lucide-react";
+import { Key, Sparkles, Eye, EyeOff, Bot, ArrowRight, ShieldCheck, Cpu, X } from "lucide-react";
 
 interface ApiKeyFormProps {
   initialConfig: GeminiConfig;
   onSave: (config: GeminiConfig) => void;
+  onClose?: () => void; // Tambahan prop onClose
 }
 
-export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ initialConfig, onSave }) => {
+export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ initialConfig, onSave, onClose }) => {
   const [apiKey, setApiKey] = useState(initialConfig.apiKey || "");
   const [model, setModel] = useState(initialConfig.model || "gemini-3-flash-preview");
   const [customModel, setCustomModel] = useState("");
@@ -54,8 +56,20 @@ export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ initialConfig, onSave })
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      <div className="w-full max-w-xl bg-slate-900/80 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-6 sm:p-8 shadow-2xl shadow-cyan-500/5">
+      {/* Tambahkan class 'relative' pada container ini */}
+      <div className="w-full max-w-xl bg-slate-900/80 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-6 sm:p-8 shadow-2xl shadow-cyan-500/5 relative">
         
+        {/* Tombol Close */}
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500/50"
+            title="Tutup"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
+
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 mb-4 shadow-lg shadow-cyan-500/20 text-white">
@@ -102,7 +116,7 @@ export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ initialConfig, onSave })
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder="AIzaSy..."
                 required
-                className="w-full bg-slate-950/70 border border-slate-700/80 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 text-sm transition"
+                className="w-full bg-slate-950/70 border border-slate-700/80 rounded-xl pl-4 pr-10 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 text-sm transition"
               />
               <button
                 type="button"
@@ -126,7 +140,7 @@ export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ initialConfig, onSave })
               Pilih Model Gemini <span className="text-red-400">*</span>
             </label>
 
-            <div className="grid grid-cols-1 gap-2.5 max-h-56 overflow-y-auto pr-1">
+            <div className="grid grid-cols-1 gap-2.5 max-h-40 overflow-y-auto pr-1">
               {AVAILABLE_MODELS.map((item) => (
                 <div
                   key={item.id}
@@ -136,7 +150,7 @@ export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ initialConfig, onSave })
                   }}
                   className={`p-3.5 rounded-xl border cursor-pointer transition flex items-center justify-between ${
                     !useCustomModel && model === item.id
-                      ? "bg-cyan-950/40 border-cyan-500/70 ring-1 ring-cyan-500/40"
+                      ? "bg-cyan-950/40 border-cyan-500/70 ring-0.7 ring-cyan-500/40"
                       : "bg-slate-950/40 border-slate-800 hover:border-slate-700 hover:bg-slate-800/40"
                   }`}
                 >
@@ -185,19 +199,21 @@ export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ initialConfig, onSave })
           </div>
 
           {/* System Instruction Optional */}
-          <div>
-            <label className="text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-1.5 mb-2">
-              <Bot className="w-3.5 h-3.5 text-cyan-400" />
-              Instruksi Sistem (Opsional)
-            </label>
-            <textarea
-              value={systemInstruction}
-              onChange={(e) => setSystemInstruction(e.target.value)}
-              placeholder="Contoh: Kamu adalah asisten AI pemrograman senior yang selalu memberikan contoh kode yang rapi dan respons teknis ringkas."
-              rows={2}
-              className="w-full bg-slate-950/70 border border-slate-700/80 rounded-xl px-4 py-2.5 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 resize-none transition"
-            />
-          </div>
+          { /*
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-1.5 mb-2">
+                <Bot className="w-3.5 h-3.5 text-cyan-400" />
+                Instruksi Sistem (Opsional)
+              </label>
+              <textarea
+                value={systemInstruction}
+                onChange={(e) => setSystemInstruction(e.target.value)}
+                placeholder="Contoh: Kamu adalah asisten AI pemrograman senior yang selalu memberikan contoh kode yang rapi dan respons teknis ringkas."
+                rows={2}
+                className="w-full bg-slate-950/70 border border-slate-700/80 rounded-xl px-4 py-2.5 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 resize-none transition"
+              />
+            </div> */
+          }
 
           {/* Submit Button */}
           <button
