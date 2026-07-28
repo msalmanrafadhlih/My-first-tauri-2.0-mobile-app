@@ -36,6 +36,7 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         run: |
+          mkdir -p src-tauri/gen/android
           # Mengembalikan teks Base64 menjadi file .jks
           echo $KEYSTORE_BASE64 | base64 --decode > src-tauri/gen/android/upload-keystore.jks
 
@@ -49,11 +50,17 @@ jobs:
       - name: Build Android APK
         run: bun run tauri android build --apk
 
+      - name: Rename APK
+        run: |
+          mv \
+            src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk \
+            src-tauri/gen/android/app/build/outputs/apk/universal/release/Pocket-AI-${{ github.ref_name }}-universal.apk            
+      
       - name: Upload Release to GitHub
         uses: softprops/action-gh-release@v2
         with:
-          files: src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk
-          name: Release ${{ github.ref_name }}
+          files: src-tauri/gen/android/app/build/outputs/apk/universal/release/Pocket-AI-${{ github.ref_name }}-universal.apk
+          name: Release PocketAI - ${{ github.ref_name }}
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
