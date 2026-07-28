@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "PocketAi",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "identifier": "com.tquilla.aipocket",
   "build": {
     "beforeDevCommand": "pnpm dev",

@@ -1,7 +1,20 @@
-
 import React, { useState } from "react";
-import { GeminiConfig, AVAILABLE_MODELS, validateGeminiApiKey } from "../services/gemini";
-import { Key, Sparkles, Eye, EyeOff, Bot, ArrowRight, ShieldCheck, Cpu, X } from "lucide-react";
+import {
+  GeminiConfig,
+  AVAILABLE_MODELS,
+  validateGeminiApiKey,
+} from "../services/gemini";
+import {
+  Key,
+  Sparkles,
+  Eye,
+  EyeOff,
+  Bot,
+  ArrowRight,
+  ShieldCheck,
+  Cpu,
+  X,
+} from "lucide-react";
 
 interface ApiKeyFormProps {
   initialConfig: GeminiConfig;
@@ -9,13 +22,21 @@ interface ApiKeyFormProps {
   onClose?: () => void; // Tambahan prop onClose
 }
 
-export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ initialConfig, onSave, onClose }) => {
+export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({
+  initialConfig,
+  onSave,
+  onClose,
+}) => {
   const [apiKey, setApiKey] = useState(initialConfig.apiKey || "");
-  const [model, setModel] = useState(initialConfig.model || "gemini-3-flash-preview");
+  const [model, setModel] = useState(
+    initialConfig.model || "gemini-3-flash-preview",
+  );
   const [customModel, setCustomModel] = useState("");
   const [useCustomModel, setUseCustomModel] = useState(false);
-  const [systemInstruction, setSystemInstruction] = useState(initialConfig.systemInstruction || "");
-  
+  const [systemInstruction, setSystemInstruction] = useState(
+    initialConfig.systemInstruction || "",
+  );
+
   const [showApiKey, setShowApiKey] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,14 +62,17 @@ export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ initialConfig, onSave, o
     try {
       // Validate key against Google API
       await validateGeminiApiKey(apiKey, selectedModel);
-      
+
       onSave({
         apiKey: apiKey.trim(),
         model: selectedModel,
-        systemInstruction: systemInstruction.trim()
+        systemInstruction: systemInstruction.trim(),
       });
     } catch (err: any) {
-      setError(err?.message || "Gagal memverifikasi API Key. Pastikan API key benar dan aktif.");
+      setError(
+        err?.message ||
+          "Gagal memverifikasi API Key. Pastikan API key benar dan aktif.",
+      );
     } finally {
       setIsValidating(false);
     }
@@ -58,7 +82,6 @@ export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ initialConfig, onSave, o
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       {/* Tambahkan class 'relative' pada container ini */}
       <div className="w-full max-w-xl bg-slate-900/80 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-6 sm:p-8 shadow-2xl shadow-cyan-500/5 relative">
-        
         {/* Tombol Close */}
         {onClose && (
           <button
@@ -91,7 +114,6 @@ export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ initialConfig, onSave, o
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          
           {/* API Key Input */}
           <div>
             <div className="flex justify-between items-center mb-2">
@@ -124,12 +146,17 @@ export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ initialConfig, onSave, o
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition p-1"
                 title={showApiKey ? "Sembunyikan" : "Tampilkan"}
               >
-                {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showApiKey ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
               </button>
             </div>
             <p className="text-[11px] text-slate-500 mt-1.5 flex items-center gap-1">
               <ShieldCheck className="w-3 h-3 text-emerald-400" />
-              API Key Anda tersimpan aman hanya di browser/client lokal (localStorage).
+              API Key Anda tersimpan aman hanya di browser/client lokal
+              (localStorage).
             </p>
           </div>
 
@@ -156,18 +183,24 @@ export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ initialConfig, onSave, o
                 >
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-sm text-slate-100">{item.name}</span>
+                      <span className="font-semibold text-sm text-slate-100">
+                        {item.name}
+                      </span>
                       <span className="px-2 py-0.5 text-[10px] rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
                         {item.badge}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-400 mt-0.5">{item.description}</p>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      {item.description}
+                    </p>
                   </div>
-                  <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                    !useCustomModel && model === item.id
-                      ? "border-cyan-400 bg-cyan-500"
-                      : "border-slate-600"
-                  }`}>
+                  <div
+                    className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                      !useCustomModel && model === item.id
+                        ? "border-cyan-400 bg-cyan-500"
+                        : "border-slate-600"
+                    }`}
+                  >
                     {!useCustomModel && model === item.id && (
                       <div className="w-1.5 h-1.5 rounded-full bg-slate-950" />
                     )}
@@ -183,7 +216,9 @@ export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ initialConfig, onSave, o
                 onClick={() => setUseCustomModel(!useCustomModel)}
                 className="text-xs text-slate-400 hover:text-slate-200 underline font-medium"
               >
-                {useCustomModel ? "← Pilih dari daftar model standar" : "+ Tuliskan nama model kustom"}
+                {useCustomModel
+                  ? "← Pilih dari daftar model standar"
+                  : "+ Tuliskan nama model kustom"}
               </button>
 
               {useCustomModel && (
@@ -199,21 +234,19 @@ export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ initialConfig, onSave, o
           </div>
 
           {/* System Instruction Optional */}
-          { /*
-            <div>
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-1.5 mb-2">
-                <Bot className="w-3.5 h-3.5 text-cyan-400" />
-                Instruksi Sistem (Opsional)
-              </label>
-              <textarea
-                value={systemInstruction}
-                onChange={(e) => setSystemInstruction(e.target.value)}
-                placeholder="Contoh: Kamu adalah asisten AI pemrograman senior yang selalu memberikan contoh kode yang rapi dan respons teknis ringkas."
-                rows={2}
-                className="w-full bg-slate-950/70 border border-slate-700/80 rounded-xl px-4 py-2.5 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 resize-none transition"
-              />
-            </div> */
-          }
+          <div className="hidden">
+            <label className="text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-1.5 mb-2">
+              <Bot className="w-3.5 h-3.5 text-cyan-400" />
+              Instruksi Sistem (Opsional)
+            </label>
+            <textarea
+              value={systemInstruction}
+              onChange={(e) => setSystemInstruction(e.target.value)}
+              placeholder="Contoh: Kamu adalah asisten AI pemrograman senior yang selalu memberikan contoh kode yang rapi dan respons teknis ringkas."
+              rows={2}
+              className="w-full bg-slate-950/70 border border-slate-700/80 rounded-xl px-4 py-2.5 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 resize-none transition"
+            />
+          </div>
 
           {/* Submit Button */}
           <button
@@ -233,7 +266,6 @@ export const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ initialConfig, onSave, o
               </>
             )}
           </button>
-
         </form>
       </div>
     </div>
