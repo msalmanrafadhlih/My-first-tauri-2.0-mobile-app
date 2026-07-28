@@ -3,11 +3,6 @@
 **/target/
 Cargo.lock
 
-# --- Tauri 2.0 Mobile (Android & iOS) ---
-# Mengabaikan folder 'gen' tempat Tauri menaruh file build Android/iOS otomatis
-**/src-tauri/gen/
-**/src-tauri/bin/
-
 # --- Nix / Devenv ---
 .devenv/
 .envrc
