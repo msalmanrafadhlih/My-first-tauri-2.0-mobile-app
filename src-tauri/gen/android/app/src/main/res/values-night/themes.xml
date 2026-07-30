@@ -1,5 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
+    <!-- <item name="android:statusBarColor">@android:color/transparent</item> -->
+    <!-- <item name="android:windowLightStatusBar">false</item> -->
     <style name="Theme.pocket_ai" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
     </style>
