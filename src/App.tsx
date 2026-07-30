@@ -45,6 +45,7 @@ export const App: React.FC = () => {
           }
         }
         onSave={handleSaveConfig}
+        onClose={isSettingMode ? () => setIsSettingMode(false) : undefined}
       />
     );
   }
